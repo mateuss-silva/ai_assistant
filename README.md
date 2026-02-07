@@ -56,11 +56,9 @@ Cobertura abrangente garantindo confiabilidade crítica:
 
 ## 📸 Screenshots
 
-|                Análise de Risco                 |             Estado Seguro             |
-| :---------------------------------------------: | :-----------------------------------: |
-| ![Risco Crítico](screenshots/risk_critical.png) | ![Seguro](screenshots/safe_state.png) |
-
-_(Adicione seus prints na pasta `screenshots`)_
+|                   Tela Inicial (Idle)                   |                   Processando (Load)                    |                   Resultado da Análise                    |
+| :-----------------------------------------------------: | :-----------------------------------------------------: | :-------------------------------------------------------: |
+| <img src="screenshots/Screenshot_idle.png" width="250"> | <img src="screenshots/Screenshot_load.png" width="250"> | <img src="screenshots/Screenshot_result.png" width="250"> |
 
 ---
 
