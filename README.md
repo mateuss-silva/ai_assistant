@@ -2,8 +2,6 @@
 
 > Um aplicativo Flutter de alta segurança para análise de mensagens financeiras, projetado com **Offline-First** e **Privacy-by-Design**.
 
-![App Mockup](screenshots/analysis_screen_mockup.png)
-
 ## 🚀 Sobre o Projeto
 
 Este projeto demonstra uma implementação robusta de um assistente de segurança que analisa SMS/Emails suspeitos (phishing, fraudes bancárias). O diferencial técnico é a **Inteligência Híbrida**: a análise ocorre localmente no dispositivo (via Platform Channels simulação) para proteger os dados do usuário, recorrendo à nuvem apenas em casos extremos e com consentimento explícito.
