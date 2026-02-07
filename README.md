@@ -26,6 +26,17 @@ Comunicação bidirecional otimizada entre Flutter e código nativo:
 - **iOS**: `Swift` com Combine Framework.
 - **Protocolo**: `MethodChannel` para comandos e `EventChannel` para streaming de eventos realtime.
 
+### 📚 Bibliotecas & Ferramentas (Flutter)
+
+| Biblioteca           | Propósito                                                                            |
+| :------------------- | :----------------------------------------------------------------------------------- |
+| **flutter_riverpod** | Gerenciamento de estado reativo e injeção de dependência segura e testável.          |
+| **freezed**          | Geração de código para classes imutáveis (Value Objects) e Union Types.              |
+| **dartz**            | Programação funcional (`Either<Failure, Success>`) para tratamento de erros robusto. |
+| **flutter_dotenv**   | Segurança no gerenciamento de variáveis de ambiente (API Keys).                      |
+| **mocktail**         | Criação de mocks simplificada para testes unitários.                                 |
+| **integration_test** | Testes de integração oficiais do Flutter para validação E2E.                         |
+
 ---
 
 ## 🔒 Segurança & Privacidade
