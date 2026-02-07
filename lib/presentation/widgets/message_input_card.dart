@@ -56,6 +56,18 @@ class MessageInputCard extends StatelessWidget {
     return TextFormField(
       controller: controller,
       maxLines: 5,
+      maxLength: 500, // Limit input length for security/performance
+      buildCounter:
+          (context, {required currentLength, required isFocused, maxLength}) {
+            return isFocused
+                ? Text(
+                    '$currentLength/$maxLength',
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.withAlpha(AppColors.white, 0.5),
+                    ),
+                  )
+                : null;
+          },
       style: AppTypography.body,
       decoration: AppInputs.textField(
         hint: 'Ex: Detectamos atividade suspeita em sua conta...',
