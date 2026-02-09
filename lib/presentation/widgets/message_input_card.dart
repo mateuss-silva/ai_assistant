@@ -55,7 +55,7 @@ class MessageInputCard extends StatelessWidget {
   Widget _buildTextField() {
     return TextFormField(
       controller: controller,
-      maxLines: 5,
+      maxLines: 7,
       maxLength: 500, // Limit input length for security/performance
       buildCounter:
           (context, {required currentLength, required isFocused, maxLength}) {

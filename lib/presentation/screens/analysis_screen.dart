@@ -52,9 +52,9 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
           child: SafeArea(
             child: CustomScrollView(
               slivers: [
-                const SliverToBoxAdapter(child: AppHeader()),
-                SliverToBoxAdapter(
-                  child: MessageInputCard(
+                _buildConstrainedSliver(const AppHeader()),
+                _buildConstrainedSliver(
+                  MessageInputCard(
                     controller: _messageController,
                     formKey: _formKey,
                     onAnalyze: _analyze,
@@ -62,10 +62,21 @@ class _AnalysisScreenState extends ConsumerState<AnalysisScreen> {
                     isLoading: isLoading,
                   ),
                 ),
-                SliverToBoxAdapter(child: ResultsSection(state: state)),
+                _buildConstrainedSliver(ResultsSection(state: state)),
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConstrainedSliver(Widget child) {
+    return SliverToBoxAdapter(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 850),
+          child: child,
         ),
       ),
     );
