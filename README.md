@@ -12,30 +12,35 @@ Este projeto demonstra uma implementação robusta de um assistente de seguranç
 
 O projeto segue estritamente os princípios de **Clean Architecture** e **SOLID**.
 
-### 🏗️ Arquitetura (Clean Arch)
+### 🏗️ Arquitetura & IA (Inteligência Híbrida)
 
-- **Domain Layer**: Entidades puras (`MessageAnalysis`), Value Objects (`MessageText`) e UseCases (`AnalyzeMessage`). Sem dependências de framework.
-- **Data Layer**: Repositories (`MessageAnalyzerRepositoryImpl`) com estratégia _Offline-First_.
-- **Presentation Layer**: _MVVM_ com **Riverpod** para gerenciamento de estado reativo.
+O projeto segue os princípios de **Clean Architecture** e **SOLID**, com uma estratégia de processamento que prioriza a privacidade:
 
-### 🔌 Integração Nativa (MethodChannels)
+- **Offline-First (Android)**: Utiliza `TensorFlow Lite` (TFLite) com `FlexDelegate` para inferência local real. O modelo é carregado via assets nativos e processa mensagens sem sair do dispositivo.
+- **Hybrid/Cloud (Web & iOS Fallback)**: Utiliza **Google Gemini 2.5 Flash** para análises complexas ou quando o motor local não está disponível. Na Web, o Gemini é o motor principal via integração direta com a `google_generative_ai`.
+- **Domain Layer**: Entidades puras (`MessageAnalysis`), Value Objects (`MessageText`) e UseCases (`AnalyzeMessage`).
+- **Data Layer**: Repositories (`MessageAnalyzerRepositoryImpl`) que gerenciam a alternância entre local e nuvem.
+- **Presentation Layer**: _MVVM_ com **Riverpod** para um estado reativo e previsível.
 
-Comunicação bidirecional otimizada entre Flutter e código nativo:
+### 🧠 Treinamento do Modelo (Custom TFLite)
 
-- **Android**: `Kotlin` com Coroutines e StateFlow.
-- **iOS**: `Swift` com Combine Framework.
-- **Protocolo**: `MethodChannel` para comandos e `EventChannel` para streaming de eventos realtime.
+O modelo de detecção de fraudes é treinado sob medida usando o script [train_model.py](/scripts/train_model.py):
 
-### 📚 Bibliotecas & Ferramentas (Flutter)
+1.  **Tecnologia**: Baseado em `TensorFlow` e `Keras` em Python.
+2.  **Arquitetura do Modelo**: Utiliza uma camada de `TextVectorization` (embutida no modelo para portabilidade), seguida de `Embedding` e camadas densas.
+3.  **Exportação**: O modelo é convertido para `.tflite` com suporte a `SELECT_TF_OPS`, permitindo que operações complexas de String sejam executadas nativamente no Android via `FlexDelegate`.
+4.  **Automação**: O script já exporta o modelo diretamente para a pasta de assets do Android.
 
-| Biblioteca           | Propósito                                                                            |
-| :------------------- | :----------------------------------------------------------------------------------- |
-| **flutter_riverpod** | Gerenciamento de estado reativo e injeção de dependência segura e testável.          |
-| **freezed**          | Geração de código para classes imutáveis (Value Objects) e Union Types.              |
-| **dartz**            | Programação funcional (`Either<Failure, Success>`) para tratamento de erros robusto. |
-| **flutter_dotenv**   | Segurança no gerenciamento de variáveis de ambiente (API Keys).                      |
-| **mocktail**         | Criação de mocks simplificada para testes unitários.                                 |
-| **integration_test** | Testes de integração oficiais do Flutter para validação E2E.                         |
+### 📚 Bibliotecas & Ferramentas
+
+| Biblioteca               | Propósito                                                                   |
+| :----------------------- | :-------------------------------------------------------------------------- |
+| **flutter_riverpod**     | Gerenciamento de estado reativo e injeção de dependência.                   |
+| **google_generative_ai** | Integração com Gemini 2.5 Flash para análise avançada em nuvem.             |
+| **tensorflow_lite**      | (Native Android) Motor de inferência para modelos personalizados `.tflite`. |
+| **freezed**              | Geração de código para classes imutáveis e Union Types.                     |
+| **dartz**                | Programação funcional (`Either`) para tratamento de erros.                  |
+| **flutter_dotenv**       | Segurança no gerenciamento de API Keys (Gemini).                            |
 
 ---
 
