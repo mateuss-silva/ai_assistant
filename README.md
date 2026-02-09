@@ -16,7 +16,11 @@ O projeto segue estritamente os princípios de **Clean Architecture** e **SOLID*
 
 O projeto segue os princípios de **Clean Architecture** e **SOLID**, com uma estratégia de processamento que prioriza a privacidade:
 
-- **Offline-First (Android)**: Utiliza `TensorFlow Lite` (TFLite) com `FlexDelegate` para inferência local real. O modelo é carregado via assets nativos e processa mensagens sem sair do dispositivo.
+- **Offline-First (Android)**: Utiliza `TensorFlow Lite` (TFLite) com `FlexDelegate` para inferência local real. O modelo é um classificador customizado treinado especificamente para este domínio.
+- **Treinamento Customizado (`scripts/train_model.py`)**:
+  - O modelo foi construído com Keras e utiliza uma arquitetura compacta: `TextVectorization` -> `Embedding` -> `GlobalAveragePooling1D` -> `Dense(16, ReLU)` -> `Dense(4, Softmax)`.
+  - **Por que duas camadas densas?** A primeira camada (16 unidades) funciona como um extrator de características complexas a partir das médias dos embeddings, enquanto a segunda camada (4 unidades) realiza a classificação final nas categorias: `fraud`, `payment`, `alert` e `info`.
+  - Exportado com `SELECT_TF_OPS` para suportar pré-processamento de texto diretamente no dispositivo.
 - **Hybrid/Cloud (Web & iOS Fallback)**: Utiliza **Google Gemini 2.5 Flash** para análises complexas ou quando o motor local não está disponível. Na Web, o Gemini é o motor principal via integração direta com a `google_generative_ai`.
 - **Domain Layer**: Entidades puras (`MessageAnalysis`), Value Objects (`MessageText`) e UseCases (`AnalyzeMessage`).
 - **Data Layer**: Repositories (`MessageAnalyzerRepositoryImpl`) que gerenciam a alternância entre local e nuvem.
