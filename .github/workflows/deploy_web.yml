@@ -7,6 +7,10 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    if: |
+      startsWith(github.event.head_commit.message, 'fix:') || 
+      startsWith(github.event.head_commit.message, 'feat:') || 
+      startsWith(github.event.head_commit.message, 'feature:')
     steps:
       - uses: actions/checkout@v3
 
