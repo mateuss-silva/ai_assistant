@@ -35,10 +35,10 @@ class AnalyzeMessageUseCase {
       );
     }
 
-    if (trimmedMessage.length > 5000) {
+    if (trimmedMessage.length > 500) {
       return const Left(
         Failure.invalidMessage(
-          reason: 'Mensagem muito longa (máximo 5000 caracteres)',
+          reason: 'Mensagem muito longa (máximo 500 caracteres)',
         ),
       );
     }

@@ -92,6 +92,7 @@ class MessageAnalyzerRepositoryImpl implements MessageAnalyzerRepository {
       isLocalAnalysis: isLocal,
       analyzedAt: DateTime.now(),
       detectedKeywords: List<String>.from(data['detectedKeywords'] ?? []),
+      modelName: data['model'] as String?,
     );
   }
 

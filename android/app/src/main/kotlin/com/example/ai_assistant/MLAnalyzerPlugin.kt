@@ -21,7 +21,7 @@ class MLAnalyzerPlugin private constructor(
     private val context: Context
 ) : MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
 
-    private val viewModel = MLAnalyzerViewModel()
+    private val viewModel = MLAnalyzerViewModel(context)
     private val mainScope = CoroutineScope(Dispatchers.Main)
     
     // For single-response methods
@@ -73,7 +73,8 @@ class MLAnalyzerPlugin private constructor(
                 }
             }
             "isAvailable" -> {
-                result.success(true)
+                // Now checking the real availability of the engine
+                result.success(viewModel.isAvailable())
             }
             else -> {
                 result.notImplemented()

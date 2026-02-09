@@ -155,6 +155,16 @@ class AnalysisResultCard extends StatelessWidget {
               _buildDetailRow(
                 'Análise',
                 analysis.isLocalAnalysis ? '📱 Local (offline)' : '☁️ Nuvem',
+                trailing: analysis.modelName != null
+                    ? Tooltip(
+                        message: 'Engine: ${analysis.modelName}',
+                        child: Icon(
+                          Icons.info_outline,
+                          size: 14,
+                          color: AppColors.withAlpha(AppColors.white, 0.4),
+                        ),
+                      )
+                    : null,
               ),
               if (analysis.detectedKeywords.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.md),
@@ -199,7 +209,7 @@ class AnalysisResultCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(String label, String value, {Widget? trailing}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
@@ -211,7 +221,16 @@ class AnalysisResultCard extends StatelessWidget {
               color: AppColors.withAlpha(AppColors.white, 0.5),
             ),
           ),
-          Text(value, style: AppTypography.bodySmall),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(value, style: AppTypography.bodySmall),
+              if (trailing != null) ...[
+                const SizedBox(width: AppSpacing.xs),
+                trailing,
+              ],
+            ],
+          ),
         ],
       ),
     );

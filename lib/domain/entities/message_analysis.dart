@@ -39,6 +39,9 @@ class MessageAnalysis with _$MessageAnalysis {
 
     /// Additional keywords detected
     @Default([]) List<String> detectedKeywords,
+
+    /// The name of the ML model used for this analysis
+    String? modelName,
   }) = _MessageAnalysis;
 
   factory MessageAnalysis.fromJson(Map<String, dynamic> json) =>

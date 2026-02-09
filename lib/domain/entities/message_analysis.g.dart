@@ -24,6 +24,7 @@ _$MessageAnalysisImpl _$$MessageAnalysisImplFromJson(
           ?.map((e) => e as String)
           .toList() ??
       const [],
+  modelName: json['modelName'] as String?,
 );
 
 Map<String, dynamic> _$$MessageAnalysisImplToJson(
@@ -38,6 +39,7 @@ Map<String, dynamic> _$$MessageAnalysisImplToJson(
   'isLocalAnalysis': instance.isLocalAnalysis,
   'analyzedAt': instance.analyzedAt.toIso8601String(),
   'detectedKeywords': instance.detectedKeywords,
+  'modelName': instance.modelName,
 };
 
 const _$SentimentEnumMap = {

@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 /// Data source for local ML analysis via platform channels
 ///
@@ -41,135 +44,52 @@ class LocalMLDataSource {
 
 /// Data source for fallback cloud analysis
 ///
-/// Only used when local analysis fails and user consents
+/// Uses Google Gemini Pro to provide deep analysis when local engine is insufficient
 class CloudMLDataSource {
-  // In production, this would call an actual API
-  // For now, it's a mock that simulates cloud analysis
+  final String _apiKey = dotenv.get('GEMINI_API_KEY', fallback: '');
 
   Future<Map<String, dynamic>> analyzeMessage(String message) async {
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    // Mock cloud analysis - in production, call real API
-    return _performMockAnalysis(message);
-  }
-
-  Map<String, dynamic> _performMockAnalysis(String message) {
-    final lowerMessage = message.toLowerCase();
-
-    // Simple keyword-based analysis (same as native, for consistency)
-    final fraudKeywords = [
-      'urgente',
-      'imediato',
-      'confirme',
-      'clique',
-      'link',
-      'senha',
-      'suspeita',
-    ];
-    final paymentKeywords = [
-      'pagamento',
-      'pix',
-      'transferência',
-      'boleto',
-      'fatura',
-    ];
-    final alertKeywords = ['alerta', 'aviso', 'atenção', 'detectamos'];
-
-    int fraudScore = 0;
-    int paymentScore = 0;
-    int alertScore = 0;
-    List<String> detectedKeywords = [];
-
-    for (final keyword in fraudKeywords) {
-      if (lowerMessage.contains(keyword)) {
-        fraudScore++;
-        detectedKeywords.add(keyword);
-      }
+    if (_apiKey.isEmpty || _apiKey == 'your_api_key_here') {
+      throw Exception('Gemini API Key não configurada no .env');
     }
 
-    for (final keyword in paymentKeywords) {
-      if (lowerMessage.contains(keyword)) {
-        paymentScore++;
-        detectedKeywords.add(keyword);
-      }
+    try {
+      final model = GenerativeModel(
+        model: 'gemini-2.5-flash',
+        apiKey: _apiKey,
+        generationConfig: GenerationConfig(
+          responseMimeType: 'application/json',
+        ),
+      );
+
+      final prompt =
+          '''
+      Analise esta mensagem financeira e retorne um JSON com os campos:
+      - sentiment: "positive", "negative" ou "neutral"
+      - intent: "fraud", "payment", "alert" ou "info"
+      - riskLevel: "low", "medium", "high" ou "critical"
+      - confidence: "low", "medium" ou "high"
+      - detectedKeywords: lista de palavras suspeitas ou importantes
+      
+      Mensagem: "$message"
+      ''';
+
+      final content = [Content.text(prompt)];
+      final response = await model.generateContent(content);
+
+      final jsonResponse = jsonDecode(response.text ?? '{}');
+
+      return {
+        'sentiment': jsonResponse['sentiment'] ?? 'neutral',
+        'intent': jsonResponse['intent'] ?? 'info',
+        'riskLevel': jsonResponse['riskLevel'] ?? 'low',
+        'confidence': jsonResponse['confidence'] ?? 'medium',
+        'detectedKeywords': jsonResponse['detectedKeywords'] ?? [],
+        'isLocal': false,
+        'model': 'Gemini 2.5 Flash',
+      };
+    } catch (e) {
+      throw Exception('Erro na análise Cloud: $e');
     }
-
-    for (final keyword in alertKeywords) {
-      if (lowerMessage.contains(keyword)) {
-        alertScore++;
-        detectedKeywords.add(keyword);
-      }
-    }
-
-    // Determine intent
-    String intent;
-    if (fraudScore >= 2) {
-      intent = 'fraud';
-    } else if (paymentScore > 0) {
-      intent = 'payment';
-    } else if (alertScore > 0) {
-      intent = 'alert';
-    } else {
-      intent = 'info';
-    }
-
-    // Determine sentiment
-    final negativeWords = [
-      'suspeita',
-      'urgente',
-      'problema',
-      'bloqueado',
-      'negado',
-    ];
-    final positiveWords = ['aprovado', 'sucesso', 'confirmado', 'parabéns'];
-
-    int negativeScore = negativeWords
-        .where((w) => lowerMessage.contains(w))
-        .length;
-    int positiveScore = positiveWords
-        .where((w) => lowerMessage.contains(w))
-        .length;
-
-    String sentiment;
-    if (negativeScore > positiveScore) {
-      sentiment = 'negative';
-    } else if (positiveScore > negativeScore) {
-      sentiment = 'positive';
-    } else {
-      sentiment = 'neutral';
-    }
-
-    // Determine risk level
-    String riskLevel;
-    if (fraudScore >= 3) {
-      riskLevel = 'critical';
-    } else if (fraudScore >= 2) {
-      riskLevel = 'high';
-    } else if (fraudScore >= 1 || alertScore >= 2) {
-      riskLevel = 'medium';
-    } else {
-      riskLevel = 'low';
-    }
-
-    // Determine confidence
-    String confidence;
-    int totalKeywords = detectedKeywords.length;
-    if (totalKeywords >= 4) {
-      confidence = 'high';
-    } else if (totalKeywords >= 2) {
-      confidence = 'medium';
-    } else {
-      confidence = 'low';
-    }
-
-    return {
-      'sentiment': sentiment,
-      'intent': intent,
-      'riskLevel': riskLevel,
-      'confidence': confidence,
-      'detectedKeywords': detectedKeywords,
-      'isLocal': false,
-    };
   }
 }

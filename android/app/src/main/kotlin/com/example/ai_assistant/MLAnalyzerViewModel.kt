@@ -1,5 +1,6 @@
 package com.example.ai_assistant
 
+import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
  * Manages CoroutineScope for background execution.
  */
 class MLAnalyzerViewModel(
-    private val repository: MLRepository = MLRepository()
+    private val context: Context,
+    private val repository: MLRepository = MLRepository(context)
 ) {
     // StateFlow for analysis results
     private val _analysisState = MutableStateFlow<Map<String, Any>?>(null)
@@ -32,4 +34,6 @@ class MLAnalyzerViewModel(
             }
         }
     }
+
+    fun isAvailable(): Boolean = repository.isAvailable()
 }

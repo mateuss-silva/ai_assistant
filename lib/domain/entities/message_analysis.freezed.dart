@@ -48,6 +48,9 @@ mixin _$MessageAnalysis {
   /// Additional keywords detected
   List<String> get detectedKeywords => throw _privateConstructorUsedError;
 
+  /// The name of the ML model used for this analysis
+  String? get modelName => throw _privateConstructorUsedError;
+
   /// Serializes this MessageAnalysis to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
@@ -75,6 +78,7 @@ abstract class $MessageAnalysisCopyWith<$Res> {
     bool isLocalAnalysis,
     DateTime analyzedAt,
     List<String> detectedKeywords,
+    String? modelName,
   });
 
   $SuggestedActionCopyWith<$Res> get suggestedAction;
@@ -104,6 +108,7 @@ class _$MessageAnalysisCopyWithImpl<$Res, $Val extends MessageAnalysis>
     Object? isLocalAnalysis = null,
     Object? analyzedAt = null,
     Object? detectedKeywords = null,
+    Object? modelName = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -143,6 +148,10 @@ class _$MessageAnalysisCopyWithImpl<$Res, $Val extends MessageAnalysis>
                 ? _value.detectedKeywords
                 : detectedKeywords // ignore: cast_nullable_to_non_nullable
                       as List<String>,
+            modelName: freezed == modelName
+                ? _value.modelName
+                : modelName // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -178,6 +187,7 @@ abstract class _$$MessageAnalysisImplCopyWith<$Res>
     bool isLocalAnalysis,
     DateTime analyzedAt,
     List<String> detectedKeywords,
+    String? modelName,
   });
 
   @override
@@ -207,6 +217,7 @@ class __$$MessageAnalysisImplCopyWithImpl<$Res>
     Object? isLocalAnalysis = null,
     Object? analyzedAt = null,
     Object? detectedKeywords = null,
+    Object? modelName = freezed,
   }) {
     return _then(
       _$MessageAnalysisImpl(
@@ -246,6 +257,10 @@ class __$$MessageAnalysisImplCopyWithImpl<$Res>
             ? _value._detectedKeywords
             : detectedKeywords // ignore: cast_nullable_to_non_nullable
                   as List<String>,
+        modelName: freezed == modelName
+            ? _value.modelName
+            : modelName // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -264,6 +279,7 @@ class _$MessageAnalysisImpl implements _MessageAnalysis {
     this.isLocalAnalysis = true,
     required this.analyzedAt,
     final List<String> detectedKeywords = const [],
+    this.modelName,
   }) : _detectedKeywords = detectedKeywords;
 
   factory _$MessageAnalysisImpl.fromJson(Map<String, dynamic> json) =>
@@ -315,9 +331,13 @@ class _$MessageAnalysisImpl implements _MessageAnalysis {
     return EqualUnmodifiableListView(_detectedKeywords);
   }
 
+  /// The name of the ML model used for this analysis
+  @override
+  final String? modelName;
+
   @override
   String toString() {
-    return 'MessageAnalysis(originalMessage: $originalMessage, sentiment: $sentiment, intent: $intent, confidence: $confidence, riskLevel: $riskLevel, suggestedAction: $suggestedAction, isLocalAnalysis: $isLocalAnalysis, analyzedAt: $analyzedAt, detectedKeywords: $detectedKeywords)';
+    return 'MessageAnalysis(originalMessage: $originalMessage, sentiment: $sentiment, intent: $intent, confidence: $confidence, riskLevel: $riskLevel, suggestedAction: $suggestedAction, isLocalAnalysis: $isLocalAnalysis, analyzedAt: $analyzedAt, detectedKeywords: $detectedKeywords, modelName: $modelName)';
   }
 
   @override
@@ -343,7 +363,9 @@ class _$MessageAnalysisImpl implements _MessageAnalysis {
             const DeepCollectionEquality().equals(
               other._detectedKeywords,
               _detectedKeywords,
-            ));
+            ) &&
+            (identical(other.modelName, modelName) ||
+                other.modelName == modelName));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -359,6 +381,7 @@ class _$MessageAnalysisImpl implements _MessageAnalysis {
     isLocalAnalysis,
     analyzedAt,
     const DeepCollectionEquality().hash(_detectedKeywords),
+    modelName,
   );
 
   /// Create a copy of MessageAnalysis
@@ -389,6 +412,7 @@ abstract class _MessageAnalysis implements MessageAnalysis {
     final bool isLocalAnalysis,
     required final DateTime analyzedAt,
     final List<String> detectedKeywords,
+    final String? modelName,
   }) = _$MessageAnalysisImpl;
 
   factory _MessageAnalysis.fromJson(Map<String, dynamic> json) =
@@ -429,6 +453,10 @@ abstract class _MessageAnalysis implements MessageAnalysis {
   /// Additional keywords detected
   @override
   List<String> get detectedKeywords;
+
+  /// The name of the ML model used for this analysis
+  @override
+  String? get modelName;
 
   /// Create a copy of MessageAnalysis
   /// with the given fields replaced by the non-null parameter values.
