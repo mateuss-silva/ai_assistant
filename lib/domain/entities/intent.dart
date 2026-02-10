@@ -1,3 +1,5 @@
+import 'package:ai_assistant/l10n/app_localizations.dart';
+
 /// Intent types for financial message classification
 enum Intent {
   /// Bank alerts about account activity
@@ -23,6 +25,26 @@ enum Intent {
 }
 
 extension IntentExtension on Intent {
+  String getLocalizedName(AppLocalizations l10n) {
+    switch (this) {
+      case Intent.alert:
+        return l10n.intentAlert;
+      case Intent.fraud:
+        return l10n.intentFraud;
+      case Intent.payment:
+        return l10n.intentPayment;
+      case Intent.info:
+        return l10n.intentInfo;
+      case Intent.complaint:
+        return l10n.intentComplaint;
+      case Intent.promotional:
+        return l10n.intentPromotional;
+      case Intent.unknown:
+        return l10n.intentUnknown;
+    }
+  }
+
+  @Deprecated('Use getLocalizedName instead')
   String get displayName {
     switch (this) {
       case Intent.alert:

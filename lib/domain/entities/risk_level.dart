@@ -1,7 +1,36 @@
+import 'package:ai_assistant/l10n/app_localizations.dart';
+
 /// Risk level classification for financial messages
 enum RiskLevel { low, medium, high, critical }
 
 extension RiskLevelExtension on RiskLevel {
+  String getLocalizedName(AppLocalizations l10n) {
+    switch (this) {
+      case RiskLevel.low:
+        return l10n.riskLow;
+      case RiskLevel.medium:
+        return l10n.riskMedium;
+      case RiskLevel.high:
+        return l10n.riskHigh;
+      case RiskLevel.critical:
+        return l10n.riskCritical;
+    }
+  }
+
+  String getLocalizedDescription(AppLocalizations l10n) {
+    switch (this) {
+      case RiskLevel.low:
+        return l10n.riskLowDesc;
+      case RiskLevel.medium:
+        return l10n.riskMediumDesc;
+      case RiskLevel.high:
+        return l10n.riskHighDesc;
+      case RiskLevel.critical:
+        return l10n.riskCriticalDesc;
+    }
+  }
+
+  @Deprecated('Use getLocalizedName instead')
   String get displayName {
     switch (this) {
       case RiskLevel.low:
@@ -15,6 +44,7 @@ extension RiskLevelExtension on RiskLevel {
     }
   }
 
+  @Deprecated('Use getLocalizedDescription instead')
   String get description {
     switch (this) {
       case RiskLevel.low:

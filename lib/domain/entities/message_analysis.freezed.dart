@@ -80,8 +80,6 @@ abstract class $MessageAnalysisCopyWith<$Res> {
     List<String> detectedKeywords,
     String? modelName,
   });
-
-  $SuggestedActionCopyWith<$Res> get suggestedAction;
 }
 
 /// @nodoc
@@ -156,16 +154,6 @@ class _$MessageAnalysisCopyWithImpl<$Res, $Val extends MessageAnalysis>
           as $Val,
     );
   }
-
-  /// Create a copy of MessageAnalysis
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $SuggestedActionCopyWith<$Res> get suggestedAction {
-    return $SuggestedActionCopyWith<$Res>(_value.suggestedAction, (value) {
-      return _then(_value.copyWith(suggestedAction: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -189,9 +177,6 @@ abstract class _$$MessageAnalysisImplCopyWith<$Res>
     List<String> detectedKeywords,
     String? modelName,
   });
-
-  @override
-  $SuggestedActionCopyWith<$Res> get suggestedAction;
 }
 
 /// @nodoc
