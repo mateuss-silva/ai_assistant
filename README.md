@@ -15,6 +15,14 @@ Este projeto demonstra a implementação de um assistente de segurança que dete
 - **Offline-First (Android)**: Utiliza `TensorFlow Lite` (TFLite) para inferência local. O modelo foi treinado via script Python customizado (`scripts/train_model.py`) utilizando Keras e exportado para suportar pré-processamento de texto diretamente no dispositivo.
 - **Deep Analysis (Web & Cloud)**: Integração robusta com **Google Gemini 2.5 Flash**, fornecendo insights detalhados sobre sentimentos e intenções maliciosas.
 
+## 🌍 Internacionalização e Suporte Bilíngue
+
+O projeto foi arquitetado para ser global, com suporte nativo a múltiplos idiomas:
+
+- **Suporte Multi-idioma (i18n)**: Interface totalmente localizada para **Português (pt-BR)** e **Inglês (en-US)**, com detecção automática baseada no dispositivo.
+- **Modelo TFLite Bilíngue**: O modelo de IA local não depende de tradução. Ele foi treinado com um dataset misto (~2000 exemplos) para compreender e classificar mensagens financeiras em ambos os idiomas nativamente, mantendo a alta precisão e privacidade.
+- **Gestão de Strings**: Utiliza o padrão `arb` (Application Resource Bundle) do Flutter para manutenção escalável de traduções.
+
 ---
 
 ## 🛠️ Arquitetura & Boas Práticas
