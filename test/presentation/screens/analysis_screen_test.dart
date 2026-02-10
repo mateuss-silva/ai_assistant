@@ -1,5 +1,6 @@
 import 'package:ai_assistant/core/error/error.dart';
 import 'package:ai_assistant/domain/entities/entities.dart' as domain;
+import 'package:ai_assistant/l10n/app_localizations.dart';
 import 'package:ai_assistant/presentation/providers/analysis_notifier.dart';
 import 'package:ai_assistant/presentation/screens/analysis_screen.dart';
 import 'package:ai_assistant/presentation/widgets/widgets.dart';
@@ -39,7 +40,12 @@ void main() {
           isOfflineAvailableProvider.overrideWith((ref) => Future.value(true)),
           isOnlineProvider.overrideWith((ref) => Future.value(true)),
         ],
-        child: const MaterialApp(home: AnalysisScreen()),
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('pt'),
+          home: const AnalysisScreen(),
+        ),
       ),
     );
   }
@@ -50,6 +56,10 @@ void main() {
       await pumpAnalysisScreen(tester);
       await tester.pumpAndSettle();
 
+      // Get l10n from the widget tree
+      final context = tester.element(find.byType(AnalysisScreen));
+      final l10n = AppLocalizations.of(context)!;
+
       // Assert
       expect(find.byType(AppHeader), findsOneWidget);
       expect(
@@ -57,29 +67,33 @@ void main() {
         findsOneWidget,
       ); // Verify text selection enabled
       expect(find.byType(MessageInputCard), findsOneWidget);
-      // Correct text for initial state
-      expect(
-        find.text('Cole uma mensagem acima para verificar se é segura'),
-        findsOneWidget,
-      );
+      expect(find.text(l10n.initialHint), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
     });
 
     testWidgets('should display loading state', (tester) async {
       // Act
       await pumpAnalysisScreen(tester);
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.byType(AnalysisScreen));
+      final l10n = AppLocalizations.of(context)!;
+
       fakeNotifier.emit(const AnalysisLoading());
       await tester.pump();
 
       // Assert
-      // Look for the specific loader in the results section content
-      expect(find.text('Analisando mensagem...'), findsOneWidget);
+      expect(find.text(l10n.loadingMessage), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsAtLeastNWidgets(1));
     });
 
     testWidgets('should display analysis result on success', (tester) async {
       // Act
       await pumpAnalysisScreen(tester);
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.byType(AnalysisScreen));
+      final l10n = AppLocalizations.of(context)!;
 
       final tAnalysis = domain.MessageAnalysis(
         originalMessage: 'Test message',
@@ -91,6 +105,7 @@ void main() {
         detectedKeywords: ['test'],
         analyzedAt: DateTime.now(),
         suggestedAction: const domain.SuggestedAction(
+          type: domain.SuggestedActionType.ignoreMessage,
           title: 'Segura',
           description: 'Go ahead',
           isUrgent: false,
@@ -102,15 +117,19 @@ void main() {
 
       // Assert
       expect(find.byType(ResultsSection), findsOneWidget);
-      // 'Risco' + ' ' + 'Baixo'
-      expect(find.text('Risco Baixo'), findsOneWidget);
-      // Action title
-      expect(find.text('Segura'), findsOneWidget);
+      // Localized risk level
+      expect(find.text(l10n.riskLevel(l10n.riskLow)), findsOneWidget);
+      // Localized action title (from type, not from the entity's title field)
+      expect(find.text(l10n.actionIgnoreMessageTitle), findsOneWidget);
     });
 
     testWidgets('should display error message on failure', (tester) async {
       // Act
       await pumpAnalysisScreen(tester);
+      await tester.pumpAndSettle();
+
+      final context = tester.element(find.byType(AnalysisScreen));
+      final l10n = AppLocalizations.of(context)!;
 
       const tFailure = Failure.cloudAnalysisFailed(message: 'Server failed');
       fakeNotifier.emit(const AnalysisError(tFailure));
@@ -118,7 +137,7 @@ void main() {
 
       // Assert
       expect(
-        find.text('Erro na análise em nuvem: Server failed'),
+        find.text('${l10n.sourceCloud} ${l10n.errorTitle}: Server failed'),
         findsOneWidget,
       );
     });

@@ -27,6 +27,7 @@ void main() {
     isLocalAnalysis: true,
     detectedKeywords: [],
     suggestedAction: const SuggestedAction(
+      type: SuggestedActionType.ignoreMessage,
       title: 'Action',
       description: 'Desc',
       isUrgent: false,
