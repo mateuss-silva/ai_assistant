@@ -5,8 +5,22 @@ import os
 import json
 
 def train_and_export():
+    # Resolver caminhos relativos ao projeto
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_dir)
+    
+    dataset_path = os.path.join(project_root, 'data', 'dataset.csv')
+    labels_path = os.path.join(project_root, 'data', 'labels.json')
+    model_dir = os.path.join(project_root, 'android', 'app', 'src', 'main', 'assets')
+    model_path = os.path.join(model_dir, 'financial_model.tflite')
+
     # 1. Carregar dados
-    df = pd.read_csv('data/dataset.csv')
+    if not os.path.exists(dataset_path):
+        print(f"Erro: Dataset não encontrado em {dataset_path}")
+        print("Execute 'python scripts/generate_data.py' primeiro.")
+        return
+
+    df = pd.read_csv(dataset_path)
     texts = df['text'].astype(str).values
     labels = df['label'].values
     
@@ -54,7 +68,7 @@ def train_and_export():
     model.fit(ds_final, epochs=40, verbose=1)
     
     # 7. Salvar labels
-    with open('data/labels.json', 'w') as f:
+    with open(labels_path, 'w') as f:
         json.dump(label_map, f)
         
     # 8. Exportar para TFLite
@@ -68,11 +82,11 @@ def train_and_export():
     
     tflite_model = converter.convert()
     
-    os.makedirs('android/app/src/main/assets', exist_ok=True)
-    with open('android/app/src/main/assets/financial_model.tflite', 'wb') as f:
+    os.makedirs(model_dir, exist_ok=True)
+    with open(model_path, 'wb') as f:
         f.write(tflite_model)
         
-    print("Modelo exportado com sucesso para android/app/src/main/assets/financial_model.tflite")
+    print(f"Modelo exportado com sucesso para {model_path}")
 
 if __name__ == "__main__":
     train_and_export()
