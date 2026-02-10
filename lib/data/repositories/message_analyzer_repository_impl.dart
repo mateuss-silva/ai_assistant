@@ -34,9 +34,7 @@ class MessageAnalyzerRepositoryImpl implements MessageAnalyzerRepository {
 
       if (!isConnected) {
         return Left(
-          Failure.localAnalysisFailed(
-            message: 'Análise local falhou e não há conexão: $localError',
-          ),
+          Failure.localAnalysisFailed(message: localError.toString()),
         );
       }
 
@@ -48,9 +46,7 @@ class MessageAnalyzerRepositoryImpl implements MessageAnalyzerRepository {
         );
       } catch (cloudError) {
         return Left(
-          Failure.cloudAnalysisFailed(
-            message: 'Falha na análise em nuvem: $cloudError',
-          ),
+          Failure.cloudAnalysisFailed(message: cloudError.toString()),
         );
       }
     }

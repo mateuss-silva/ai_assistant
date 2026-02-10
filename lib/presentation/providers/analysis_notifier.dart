@@ -37,13 +37,17 @@ class AnalysisNotifier extends StateNotifier<AnalysisState> {
   Future<void> analyze(String message) async {
     state = const AnalysisLoading();
 
-    final useCase = _ref.read(analyzeMessageUseCaseProvider);
-    final result = await useCase.execute(message);
+    try {
+      final useCase = _ref.read(analyzeMessageUseCaseProvider);
+      final result = await useCase.execute(message);
 
-    state = result.fold(
-      (failure) => AnalysisError(failure),
-      (analysis) => AnalysisSuccess(analysis),
-    );
+      state = result.fold(
+        (failure) => AnalysisError(failure),
+        (analysis) => AnalysisSuccess(analysis),
+      );
+    } catch (e) {
+      state = AnalysisError(Failure.unknown(message: e.toString()));
+    }
   }
 
   /// Resets to initial state
