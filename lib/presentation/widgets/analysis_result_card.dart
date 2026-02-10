@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ai_assistant/l10n/app_localizations.dart';
 
-import '../../core/design_system/design_system.dart';
-import '../../domain/entities/entities.dart';
-import 'glass_card.dart';
+import 'package:ai_assistant/core/design_system/design_system.dart';
+import 'package:ai_assistant/domain/entities/entities.dart';
+import 'package:ai_assistant/presentation/widgets/glass_card.dart';
 
 /// Card displaying the analysis results with visual risk indicators
 class AnalysisResultCard extends StatelessWidget {
@@ -12,6 +13,7 @@ class AnalysisResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final riskColor = Color(analysis.riskLevel.colorValue);
 
     return Column(
@@ -44,12 +46,12 @@ class AnalysisResultCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Risco ${analysis.riskLevel.displayName}',
+                      l10n.riskLevel(analysis.riskLevel.getLocalizedName(l10n)),
                       style: AppTypography.h3.copyWith(color: riskColor),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      analysis.riskLevel.description,
+                      analysis.riskLevel.getLocalizedDescription(l10n),
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.withAlpha(AppColors.white, 0.7),
                       ),
@@ -82,14 +84,14 @@ class AnalysisResultCard extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    analysis.suggestedAction.title,
+                    _getLocalizedActionTitle(analysis.suggestedAction, l10n),
                     style: AppTypography.bodyLarge,
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                analysis.suggestedAction.description,
+                _getLocalizedActionDescription(analysis.suggestedAction, l10n),
                 style: AppTypography.bodySmall,
               ),
               if (analysis.suggestedAction.safeAlternative != null) ...[
@@ -113,7 +115,10 @@ class AnalysisResultCard extends StatelessWidget {
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
                         child: Text(
-                          analysis.suggestedAction.safeAlternative!,
+                          _getLocalizedActionAlternative(
+                            analysis.suggestedAction,
+                            l10n,
+                          )!,
                           style: AppTypography.bodySmall.copyWith(
                             color: AppColors.success,
                           ),
@@ -136,7 +141,7 @@ class AnalysisResultCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Detalhes da Análise',
+                l10n.analysisDetails,
                 style: AppTypography.bodySmall.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppColors.textSecondary,
@@ -144,17 +149,20 @@ class AnalysisResultCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.md),
               _buildDetailRow(
-                'Sentimento',
-                '${analysis.sentiment.emoji} ${analysis.sentiment.displayName}',
+                l10n.detailSentiment,
+                '${analysis.sentiment.emoji} ${analysis.sentiment.getLocalizedName(l10n)}',
               ),
               _buildDetailRow(
-                'Intenção',
-                '${analysis.intent.icon} ${analysis.intent.displayName}',
+                l10n.detailIntent,
+                '${analysis.intent.icon} ${analysis.intent.getLocalizedName(l10n)}',
               ),
-              _buildDetailRow('Precisão', analysis.confidence.displayName),
               _buildDetailRow(
-                'Análise',
-                analysis.isLocalAnalysis ? '📱 Local (offline)' : '☁️ Nuvem',
+                l10n.detailConfidence,
+                analysis.confidence.getLocalizedName(l10n),
+              ),
+              _buildDetailRow(
+                l10n.detailSource,
+                analysis.isLocalAnalysis ? l10n.sourceLocal : l10n.sourceCloud,
                 trailing: analysis.modelName != null
                     ? Tooltip(
                         message: 'Engine: ${analysis.modelName}',
@@ -168,10 +176,7 @@ class AnalysisResultCard extends StatelessWidget {
               ),
               if (analysis.detectedKeywords.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.md),
-                const Text(
-                  'Palavras-chave detectadas:',
-                  style: AppTypography.caption,
-                ),
+                Text(l10n.detectedKeywords, style: AppTypography.caption),
                 const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: 6,
@@ -234,6 +239,54 @@ class AnalysisResultCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getLocalizedActionTitle(
+    SuggestedAction action,
+    AppLocalizations l10n,
+  ) {
+    switch (action.type) {
+      case SuggestedActionType.doNotClickLinks:
+        return l10n.actionDoNotClickLinksTitle;
+      case SuggestedActionType.verifySource:
+        return l10n.actionVerifySourceTitle;
+      case SuggestedActionType.ignoreMessage:
+        return l10n.actionIgnoreMessageTitle;
+      case SuggestedActionType.reportFraud:
+        return l10n.actionReportFraudTitle;
+    }
+  }
+
+  String _getLocalizedActionDescription(
+    SuggestedAction action,
+    AppLocalizations l10n,
+  ) {
+    switch (action.type) {
+      case SuggestedActionType.doNotClickLinks:
+        return l10n.actionDoNotClickLinksDesc;
+      case SuggestedActionType.verifySource:
+        return l10n.actionVerifySourceDesc;
+      case SuggestedActionType.ignoreMessage:
+        return l10n.actionIgnoreMessageDesc;
+      case SuggestedActionType.reportFraud:
+        return l10n.actionReportFraudDesc;
+    }
+  }
+
+  String? _getLocalizedActionAlternative(
+    SuggestedAction action,
+    AppLocalizations l10n,
+  ) {
+    switch (action.type) {
+      case SuggestedActionType.doNotClickLinks:
+        return l10n.actionDoNotClickLinksAlternative;
+      case SuggestedActionType.verifySource:
+        return l10n.actionVerifySourceAlternative;
+      case SuggestedActionType.ignoreMessage:
+        return null;
+      case SuggestedActionType.reportFraud:
+        return l10n.actionReportFraudAlternative;
+    }
   }
 
   IconData _getRiskIcon() {

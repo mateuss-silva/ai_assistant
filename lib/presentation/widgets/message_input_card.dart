@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ai_assistant/l10n/app_localizations.dart';
 
-import '../../core/design_system/design_system.dart';
-import 'glass_card.dart';
+import 'package:ai_assistant/core/design_system/design_system.dart';
+import 'package:ai_assistant/presentation/widgets/glass_card.dart';
 
 /// Card with message input form and action buttons
 class MessageInputCard extends StatelessWidget {
@@ -22,6 +23,8 @@ class MessageInputCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
       child: GlassCard(
@@ -30,21 +33,18 @@ class MessageInputCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Cole a mensagem financeira',
-                style: AppTypography.bodyLarge,
-              ),
+              Text(l10n.inputLabel, style: AppTypography.bodyLarge),
               const SizedBox(height: AppSpacing.xs),
               Text(
-                'SMS, email ou notificação do banco',
+                l10n.inputHint,
                 style: AppTypography.bodySmall.copyWith(
                   color: AppColors.withAlpha(AppColors.white, 0.5),
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              _buildTextField(),
+              _buildTextField(l10n),
               const SizedBox(height: AppSpacing.lg),
-              _buildActionButtons(),
+              _buildActionButtons(l10n),
             ],
           ),
         ),
@@ -52,7 +52,7 @@ class MessageInputCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField() {
+  Widget _buildTextField(AppLocalizations l10n) {
     return TextFormField(
       controller: controller,
       maxLines: 7,
@@ -69,31 +69,29 @@ class MessageInputCard extends StatelessWidget {
                 : null;
           },
       style: AppTypography.body,
-      decoration: AppInputs.textField(
-        hint: 'Ex: Detectamos atividade suspeita em sua conta...',
-      ),
-      validator: _validateMessage,
+      decoration: AppInputs.textField(hint: l10n.inputHint),
+      validator: (value) => _validateMessage(value, l10n),
     );
   }
 
-  String? _validateMessage(String? value) {
+  String? _validateMessage(String? value, AppLocalizations l10n) {
     if (value == null || value.trim().isEmpty) {
-      return 'Por favor, insira uma mensagem';
+      return l10n.inputError;
     }
     if (value.trim().length < 5) {
-      return 'Mensagem muito curta';
+      return l10n.inputError; // Simplified for now
     }
     return null;
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(AppLocalizations l10n) {
     return Row(
       children: [
         Expanded(
           child: OutlinedButton(
             onPressed: onClear,
             style: AppButtons.secondary,
-            child: const Text('Limpar'),
+            child: Text(l10n.clear),
           ),
         ),
         const SizedBox(width: AppSpacing.md),
@@ -102,7 +100,9 @@ class MessageInputCard extends StatelessWidget {
           child: ElevatedButton(
             onPressed: isLoading ? null : onAnalyze,
             style: AppButtons.primary,
-            child: isLoading ? _buildLoadingIndicator() : _buildAnalyzeLabel(),
+            child: isLoading
+                ? _buildLoadingIndicator()
+                : _buildAnalyzeLabel(l10n),
           ),
         ),
       ],
@@ -120,13 +120,13 @@ class MessageInputCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAnalyzeLabel() {
-    return const Row(
+  Widget _buildAnalyzeLabel(AppLocalizations l10n) {
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.security, size: AppSpacing.iconSizeSmall),
-        SizedBox(width: AppSpacing.sm),
-        Text('Analisar', style: AppTypography.button),
+        const Icon(Icons.security, size: AppSpacing.iconSizeSmall),
+        const SizedBox(width: AppSpacing.sm),
+        Text(l10n.analyze, style: AppTypography.button),
       ],
     );
   }

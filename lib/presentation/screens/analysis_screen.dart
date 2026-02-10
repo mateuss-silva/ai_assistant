@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/design_system/design_system.dart';
-import '../providers/analysis_notifier.dart';
-import '../widgets/app_header.dart';
-import '../widgets/message_input_card.dart';
-import '../widgets/results_section.dart';
+import 'package:ai_assistant/core/design_system/design_system.dart';
+import 'package:ai_assistant/presentation/providers/analysis_notifier.dart';
+import 'package:ai_assistant/presentation/widgets/app_header.dart';
+import 'package:ai_assistant/presentation/widgets/message_input_card.dart';
+import 'package:ai_assistant/presentation/widgets/results_section.dart';
 
 /// Main screen for message analysis
 class AnalysisScreen extends ConsumerStatefulWidget {
